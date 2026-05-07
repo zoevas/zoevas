@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Building AI Agents with MCP</title>
+    <title>Building an Agentic Travel Planner with MCP and LangGraph</title>
     <link href="templatemo-personal-style.css" rel="stylesheet">
 </head>
 <body>
@@ -22,31 +22,285 @@
     <!-- Blog Post -->
     <section class="portfolio">
         <div class="container">
-            <h1 class="section-title">Agentic Travel Planner using MCP</h1>
-            
-		<p>
-			In the rapidly evolving world of AI agents, Model Context Protocol (MCP) has emerged as the universal standard for connecting large language models (LLMs) to external tools, data sources, and services. 
-Introduced by Anthropic in November 2024, MCP provides a standardized interface that makes AI agents more powerful, reliable, and interoperable.
 
-Whether you're building a weather agent, GitHub integrator, or database query system, MCP is the backbone of modern agent architectures. 
-</p>
+            <h1 class="section-title">
+                Building an Agentic Travel Planner with MCP and LangGraph
+            </h1>
 
+            <p>
+                AI agents are evolving rapidly from simple chatbot assistants into autonomous systems
+                capable of orchestrating tools, APIs, and reasoning workflows.
+                One of the most important standards enabling this shift is
+                <strong>Model Context Protocol (MCP)</strong>.
+            </p>
 
-<div class="image-container">
-    <img src="images/travel_planner_mcp.png" alt="Diseases and medications relationships" style="max-width:100%; height:auto;">
-</div>
+            <p>
+                In this project, I built a modular AI travel planner that combines:
+            </p>
 
+            <ul>
+                <li>Weather intelligence</li>
+                <li>Flight search</li>
+                <li>Semantic hotel recommendation</li>
+                <li>LLM-powered itinerary generation</li>
+                <li>LangGraph workflow orchestration</li>
+                <li>MCP-based external services</li>
+            </ul>
 
-<p>
-You can download the full health ontology in OWL format here:
-</p>
+            <p>
+                The result is an end-to-end agentic workflow capable of generating complete travel plans
+                from a few user inputs.
+            </p>
 
-<a href="ontology/health_ontology.owl" download class="purple-text-button">
-    ⬇ Download health_ontology.owl
-</a>
+            <div class="image-container">
+                <img src="images/travel_planner_mcp.png"
+                     alt="AI Travel Planner Architecture"
+                     style="max-width:100%; height:auto;">
+            </div>
 
-            <br>
-            <a href="blog.html" class="purple-text-button">← Back to Blog</a>
+            <h2>What is MCP?</h2>
+
+            <p>
+                MCP (Model Context Protocol), introduced by Anthropic in 2024,
+                standardizes how AI agents communicate with external tools and services.
+            </p>
+
+            <p>
+                Instead of tightly coupling API logic directly inside agents,
+                MCP separates external services into reusable tool servers.
+                This creates cleaner architectures and makes AI systems more modular and scalable.
+            </p>
+
+            <p>
+                In my project, MCP servers handle:
+            </p>
+
+            <ul>
+                <li>Weather data retrieval</li>
+                <li>Flight search</li>
+            </ul>
+
+            <h2>Project Architecture</h2>
+
+            <p>
+                The system is composed of multiple specialized agents:
+            </p>
+
+            <ul>
+                <li><strong>WeatherAgent</strong> → Finds the best travel months</li>
+                <li><strong>FlightAgent</strong> → Retrieves available flights</li>
+                <li><strong>HotelAgent</strong> → Ranks hotels semantically</li>
+                <li><strong>ItineraryAgent</strong> → Generates AI itineraries using Llama.cpp</li>
+            </ul>
+
+            <p>
+                These agents can be orchestrated in two ways:
+            </p>
+
+            <ul>
+                <li>A classic <strong>SupervisorAgent</strong></li>
+                <li>A graph-based workflow using <strong>LangGraph</strong></li>
+            </ul>
+
+            <h2>LangGraph Workflow</h2>
+
+            <pre>
+Weather Node
+    ↓
+Flight Node
+    ↓
+Hotel Node
+    ↓
+Itinerary Node
+    ↓
+Final Travel Plan
+            </pre>
+
+            <p>
+                LangGraph makes the architecture easier to extend with:
+            </p>
+
+            <ul>
+                <li>Retries</li>
+                <li>Fallbacks</li>
+                <li>Branching logic</li>
+                <li>Shared graph state</li>
+                <li>Debug logging</li>
+            </ul>
+
+            <h2>Weather MCP Server</h2>
+
+            <p>
+                For weather intelligence, I used the OpenWeather API.
+            </p>
+
+            <p>
+                I generated an API key from:
+            </p>
+
+            <p>
+                <a href="https://home.openweathermap.org/api_keys"
+                   target="_blank"
+                   class="purple-text-button">
+                    OpenWeather API Keys
+                </a>
+            </p>
+
+            <p>
+                The weather MCP server exposes weather functionality over SSE
+                and allows agents to retrieve climate information without directly
+                embedding API logic inside the agent itself.
+            </p>
+
+            <h2>Flight Search Challenges</h2>
+
+            <p>
+                Initially, I explored using the Amadeus Flight API:
+            </p>
+
+            <p>
+                <a href="https://developers.amadeus.com/"
+                   target="_blank"
+                   class="purple-text-button">
+                    Amadeus Developers Portal
+                </a>
+            </p>
+
+            <p>
+                However, the free tier had limitations for retrieving and testing
+                flight information during development.
+            </p>
+
+            <p>
+                Because of this, I decided to keep a manual flight database and
+                expose it through an MCP server.
+            </p>
+
+            <p>
+                This approach still allowed me to:
+            </p>
+
+            <ul>
+                <li>Build the complete MCP architecture</li>
+                <li>Test multi-agent orchestration</li>
+                <li>Develop the LangGraph workflow</li>
+                <li>Simulate real flight search behavior</li>
+            </ul>
+
+            <h2>Semantic Hotel Search</h2>
+
+            <p>
+                One of the most interesting parts of the project was the hotel ranking system.
+            </p>
+
+            <p>
+                Instead of simple keyword matching,
+                I used <strong>SentenceTransformers</strong> embeddings
+                to compute semantic similarity between user preferences and hotel descriptions.
+            </p>
+
+            <p>
+                Example preferences:
+            </p>
+
+            <pre>
+"mid budget hotel near city center with breakfast"
+            </pre>
+
+            <p>
+                The system combines:
+            </p>
+
+            <ul>
+                <li>Semantic similarity score</li>
+                <li>Price compatibility score</li>
+            </ul>
+
+            <p>
+                into a final ranking score.
+            </p>
+
+            <h2>Local LLM with Llama.cpp</h2>
+
+            <p>
+                For itinerary generation, I used:
+            </p>
+
+            <ul>
+                <li>Llama.cpp</li>
+                <li>A GGUF quantized Llama model</li>
+            </ul>
+
+            <p>
+                Running a local LLM provided:
+            </p>
+
+            <ul>
+                <li>Offline inference</li>
+                <li>Lower cost</li>
+                <li>Full control over prompts</li>
+                <li>Better experimentation flexibility</li>
+            </ul>
+
+            <h2>Why This Project Matters</h2>
+
+            <p>
+                Modern AI engineering is moving toward:
+            </p>
+
+            <ul>
+                <li>Agent orchestration</li>
+                <li>Tool calling</li>
+                <li>Workflow systems</li>
+                <li>External service integration</li>
+                <li>Memory and planning architectures</li>
+            </ul>
+
+            <p>
+                This project explores those ideas in a practical way by combining:
+            </p>
+
+            <ul>
+                <li>MCP</li>
+                <li>LangGraph</li>
+                <li>Local LLMs</li>
+                <li>Semantic search</li>
+                <li>Streamlit</li>
+            </ul>
+
+            <p>
+                into one modular AI system.
+            </p>
+
+            <h2>Future Improvements</h2>
+
+            <ul>
+                <li>Real flight APIs</li>
+                <li>Maps and attractions integration</li>
+                <li>Vector databases</li>
+                <li>Memory-enabled agents</li>
+                <li>Autonomous planning workflows</li>
+                <li>Multi-user deployment</li>
+            </ul>
+
+            <h2>Source Code</h2>
+
+            <p>
+                You can explore the full implementation on GitHub:
+            </p>
+
+            <a href="https://github.com/zoevas/agents"
+               target="_blank"
+               class="purple-text-button">
+                ⬇ View Source Code
+            </a>
+
+            <br><br>
+
+            <a href="blog.html" class="purple-text-button">
+                ← Back to Blog
+            </a>
+
         </div>
     </section>
 
