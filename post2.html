@@ -49,7 +49,7 @@
 
             <p>
                 The result is an end-to-end agentic workflow capable of generating complete travel plans
-                from a few user inputs.
+                from only a few user inputs.
             </p>
 
             <div class="image-container">
@@ -72,13 +72,9 @@
             </p>
 
             <p>
-                In my project, MCP servers handle:
+                In this project, MCP servers handle weather retrieval and flight search
+                through separate external services exposed over SSE.
             </p>
-
-            <ul>
-                <li>Weather data retrieval</li>
-                <li>Flight search</li>
-            </ul>
 
             <h2>Project Architecture</h2>
 
@@ -94,13 +90,10 @@
             </ul>
 
             <p>
-                These agents can be orchestrated in two ways:
+                The agents can be orchestrated either through a traditional
+                <strong>SupervisorAgent</strong> or through a graph-based workflow
+                using <strong>LangGraph</strong>.
             </p>
-
-            <ul>
-                <li>A classic <strong>SupervisorAgent</strong></li>
-                <li>A graph-based workflow using <strong>LangGraph</strong></li>
-            </ul>
 
             <h2>LangGraph Workflow</h2>
 
@@ -117,16 +110,19 @@ Final Travel Plan
             </pre>
 
             <p>
-                LangGraph makes the architecture easier to extend with:
+                LangGraph also makes the architecture easier to extend with retries,
+                fallback nodes, branching logic, shared state management, and debug logging.
             </p>
 
-            <ul>
-                <li>Retries</li>
-                <li>Fallbacks</li>
-                <li>Branching logic</li>
-                <li>Shared graph state</li>
-                <li>Debug logging</li>
-            </ul>
+            <p>
+                The workflow graph is built programmatically:
+            </p>
+
+<pre><code>
+graph.add_edge("weather", "flight")
+graph.add_edge("flight", "hotel")
+graph.add_edge("hotel", "itinerary")
+</code></pre>
 
             <h2>Weather MCP Server</h2>
 
@@ -155,6 +151,12 @@ Final Travel Plan
             <h2>Flight Search Challenges</h2>
 
             <p>
+                One of the most difficult parts of the project was flight integration.
+                Finding a flight API suitable for development and testing turned out
+                to be more challenging than expected.
+            </p>
+
+            <p>
                 Initially, I explored using the Amadeus Flight API:
             </p>
 
@@ -167,25 +169,20 @@ Final Travel Plan
             </p>
 
             <p>
-                However, the free tier had limitations for retrieving and testing
-                flight information during development.
+                However, the free-tier limitations made real flight retrieval difficult
+                during development and experimentation.
             </p>
 
             <p>
-                Because of this, I decided to keep a manual flight database and
-                expose it through an MCP server.
+                Because of this, I implemented a manual flight database and exposed it
+                through an MCP server instead.
             </p>
 
             <p>
-                This approach still allowed me to:
+                Even with a manual database, I was still able to fully test the MCP
+                architecture, multi-agent orchestration, and LangGraph workflow while
+                simulating realistic flight search behavior.
             </p>
-
-            <ul>
-                <li>Build the complete MCP architecture</li>
-                <li>Test multi-agent orchestration</li>
-                <li>Develop the LangGraph workflow</li>
-                <li>Simulate real flight search behavior</li>
-            </ul>
 
             <h2>Semantic Hotel Search</h2>
 
@@ -203,50 +200,31 @@ Final Travel Plan
                 Example preferences:
             </p>
 
-            <pre>
+<pre>
 "mid budget hotel near city center with breakfast"
-            </pre>
+</pre>
 
             <p>
-                The system combines:
-            </p>
-
-            <ul>
-                <li>Semantic similarity score</li>
-                <li>Price compatibility score</li>
-            </ul>
-
-            <p>
-                into a final ranking score.
+                The ranking system combines semantic similarity with price compatibility
+                into a final recommendation score.
             </p>
 
             <h2>Local LLM with Llama.cpp</h2>
 
             <p>
-                For itinerary generation, I used:
+                For itinerary generation, I used Llama.cpp together with a GGUF-quantized
+                Llama model running locally.
             </p>
 
-            <ul>
-                <li>Llama.cpp</li>
-                <li>A GGUF quantized Llama model</li>
-            </ul>
-
-<br>
             <p>
-                Running a local LLM provided:
+                Running a local LLM provided offline inference, lower cost,
+                full prompt control, and easier experimentation.
             </p>
-
-            <ul>
-                <li>Offline inference</li>
-                <li>Lower cost</li>
-                <li>Full control over prompts</li>
-                <li>Better experimentation flexibility</li>
-            </ul>
 
             <h2>Why This Project Matters</h2>
 
             <p>
-                Modern AI engineering is moving toward:
+                Modern AI engineering is increasingly moving toward:
             </p>
 
             <ul>
@@ -256,20 +234,10 @@ Final Travel Plan
                 <li>External service integration</li>
                 <li>Memory and planning architectures</li>
             </ul>
-<br>
-            <p>
-                This project explores those ideas in a practical way by combining:
-            </p>
-
-            <ul>
-                <li>MCP</li>
-                <li>LangGraph</li>
-                <li>Local LLMs</li>
-                <li>Semantic search</li>
-                <li>Streamlit</li>
-            </ul>
 
             <p>
+                This project explores those ideas in a practical way by combining
+                MCP, LangGraph, semantic search, local LLMs, and workflow orchestration
                 into one modular AI system.
             </p>
 
